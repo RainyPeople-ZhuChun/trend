@@ -7,7 +7,9 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="untitledindex-gather-store-service" />
+        <module name="index-data-service" />
         <module name="eureka-server" />
+        <module name="index-codes-service" />
         <module name="index-gather-store-service" />
         <module name="third-part-index-data-project" />
       </profile>
@@ -19,6 +21,8 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="eureka-server" options="-parameters" />
+      <module name="index-codes-service" options="-parameters" />
+      <module name="index-data-service" options="-parameters" />
       <module name="index-gather-store-service" options="-parameters" />
       <module name="third-part-index-data-project" options="-parameters" />
       <module name="untitledindex-gather-store-service" options="-parameters" />
