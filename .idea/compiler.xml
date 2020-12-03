@@ -6,12 +6,15 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="index-zuul-service" />
+        <module name="trend-trading-backtest-view" />
+        <module name="index-codes-service" />
+        <module name="third-part-index-data-project" />
         <module name="untitledindex-gather-store-service" />
         <module name="index-data-service" />
+        <module name="trend-trading-backtest-service" />
         <module name="eureka-server" />
-        <module name="index-codes-service" />
         <module name="index-gather-store-service" />
-        <module name="third-part-index-data-project" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -24,7 +27,10 @@
       <module name="index-codes-service" options="-parameters" />
       <module name="index-data-service" options="-parameters" />
       <module name="index-gather-store-service" options="-parameters" />
+      <module name="index-zuul-service" options="-parameters" />
       <module name="third-part-index-data-project" options="-parameters" />
+      <module name="trend-trading-backtest-service" options="-parameters" />
+      <module name="trend-trading-backtest-view" options="-parameters" />
       <module name="untitledindex-gather-store-service" options="-parameters" />
     </option>
   </component>
