@@ -5,6 +5,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.rainypeople.trend.pojo.IndexData;
 import com.rainypeople.trend.pojo.Profit;
+import com.rainypeople.trend.pojo.Trade;
 import com.rainypeople.trend.service.BackTestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -46,12 +47,15 @@ public class BackTestController {
         Map<String,?> simulateResult=backTestService.simulate(ma,sellSate,buySate,serviceCharge,allIndexDatas);
         //从map集合中取出所有的利润类profits
         List<Profit> profits= (List<Profit>) simulateResult.get("profits");
+        //从map集合中取出交易类trade
+        List<Trade> trades= (List<Trade>) simulateResult.get("trades");
 
         Map<String,Object> result=new HashMap<>();
         result.put("indexDatas",allIndexDatas);
         result.put("indexStartDate",indexStartDate);
         result.put("indexEndDate",indexEndDate);
         result.put("profits",profits);
+        result.put("trades",trades);
         return result;
     }
 

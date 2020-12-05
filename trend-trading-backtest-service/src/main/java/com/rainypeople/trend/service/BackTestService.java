@@ -3,6 +3,7 @@ package com.rainypeople.trend.service;
 import com.rainypeople.trend.client.IndexDataClient;
 import com.rainypeople.trend.pojo.IndexData;
 import com.rainypeople.trend.pojo.Profit;
+import com.rainypeople.trend.pojo.Trade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,7 @@ public class BackTestService {
 
     public Map<String,Object> simulate(int ma, float sellSate, float buySate, float serviceCharge, List<IndexData> allIndexDatas) {
         List<Profit> profits=new ArrayList<>();
+        List<Trade> trades=new ArrayList<>();
         //初始资金
         float initCash= 1000;
         //抛出获得的金额(在买入卖出后的资金)
@@ -68,12 +70,28 @@ public class BackTestService {
                     if (0==share){
                         share=cash/closePoint;
                         cash=0;
+
+                        //购买的交易记录
+                        Trade trade=new Trade();
+                        trade.setBuyDate(indexData.getDate());
+                        trade.setBuyClosePoint(indexData.getClosePoint());
+                        trade.setSellDate("n/a");
+                        trade.setSellClosePoint(0);
+                        trades.add(trade);
                     }
                 //如果下跌率低于了抛出阈值，全部抛出
                 }else if(decrease_sate<sellSate){
                     if (0!=share){
                         cash=share*closePoint*(1-serviceCharge);
                         share=0;
+
+                        //抛出的交易记录
+                        Trade trade=new Trade();
+                        trade.setSellDate(indexData.getDate());
+                        trade.setSellClosePoint(indexData.getClosePoint());
+                        trade.setBuyDate("n/a");
+                        trade.setBuyClosePoint(indexData.getClosePoint());
+                        trades.add(trade);
                     }
                 //如果在两者中间，什么都不做
                 }else {
@@ -100,6 +118,7 @@ public class BackTestService {
 
         Map<String,Object> result=new HashMap<>();
         result.put("profits",profits);
+        result.put("trades",trades);
         return result;
     }
 
