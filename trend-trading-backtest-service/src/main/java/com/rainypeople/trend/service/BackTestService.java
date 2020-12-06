@@ -1,5 +1,7 @@
 package com.rainypeople.trend.service;
 
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
 import com.rainypeople.trend.client.IndexDataClient;
 import com.rainypeople.trend.pojo.IndexData;
 import com.rainypeople.trend.pojo.Profit;
@@ -86,12 +88,13 @@ public class BackTestService {
                         share=0;
 
                         //抛出的交易记录
-                        Trade trade=new Trade();
+                        //只需要修改前一个创建的交易对象
+                        Trade trade=trades.get(trades.size()-1);
                         trade.setSellDate(indexData.getDate());
                         trade.setSellClosePoint(indexData.getClosePoint());
-                        trade.setBuyDate("n/a");
-                        trade.setBuyClosePoint(indexData.getClosePoint());
-                        trades.add(trade);
+                        //回报率=交易之后的资金/初始资金
+                        float rate=cash/initCash;
+                        trade.setRate(rate);
                     }
                 //如果在两者中间，什么都不做
                 }else {
@@ -168,5 +171,21 @@ public class BackTestService {
         }
         avg=sum/dateCount;
         return avg;
+    }
+
+    public float getYears(List<IndexData> allIndexDatas){
+        float years;
+
+        String sDateStart=allIndexDatas.get(0).getDate();
+        String sDateEnd=allIndexDatas.get(allIndexDatas.size()-1).getDate();
+
+        Date startDate= DateUtil.parse(sDateStart);
+        Date endDate=DateUtil.parse(sDateEnd);
+
+        long days=DateUtil.between(startDate,endDate, DateUnit.DAY);
+
+        years=days/365f;
+
+        return years;
     }
 }
