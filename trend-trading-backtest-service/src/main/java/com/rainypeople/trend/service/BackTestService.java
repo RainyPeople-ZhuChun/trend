@@ -40,6 +40,19 @@ public class BackTestService {
         //购买的股票现在的总价值
         float value=0;
 
+        //盈利交易次数
+        int winCount=0;
+        //总盈利比率
+        float totalWinRate=0;
+        //平均盈利比率
+        float avgWinRate=0;
+        //亏损交易次数
+        int lossCount=0;
+        //总亏损比率
+        float totalLossRate=0;
+        //平均亏损比率
+        float avgLossRate=0;
+
         //初始值每股价格
         float init=0;
         if (!allIndexDatas.isEmpty()){
@@ -95,6 +108,17 @@ public class BackTestService {
                         //回报率=交易之后的资金/初始资金
                         float rate=cash/initCash;
                         trade.setRate(rate);
+
+                        //获取总盈利比率和盈利交易次数
+                        if (trade.getSellClosePoint()>trade.getBuyClosePoint()){
+                            totalWinRate += (trade.getSellClosePoint()-trade.getBuyClosePoint())/trade.getBuyClosePoint();
+                            winCount++;
+
+                        //获取总亏损比率和亏损次数
+                        }else {
+                            totalLossRate += (trade.getSellClosePoint()-trade.getBuyClosePoint())/trade.getBuyClosePoint();
+                            lossCount++;
+                        }
                     }
                 //如果在两者中间，什么都不做
                 }else {
@@ -119,9 +143,17 @@ public class BackTestService {
             profits.add(profit);
         }
 
+        avgWinRate=totalWinRate/winCount;
+        avgLossRate=totalLossRate/lossCount;
+
         Map<String,Object> result=new HashMap<>();
         result.put("profits",profits);
         result.put("trades",trades);
+
+        result.put("winCount", winCount);
+        result.put("lossCount", lossCount);
+        result.put("avgWinRate", avgWinRate);
+        result.put("avgLossRate", avgLossRate);
         return result;
     }
 

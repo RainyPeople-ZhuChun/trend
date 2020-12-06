@@ -49,6 +49,16 @@ public class BackTestController {
         List<Profit> profits= (List<Profit>) simulateResult.get("profits");
         //从map集合中取出交易类trade
         List<Trade> trades= (List<Trade>) simulateResult.get("trades");
+
+        //获取盈利次数
+        int winCount = (Integer) simulateResult.get("winCount");
+        //获取平均盈利比率
+        float avgWinRate = (Float) simulateResult.get("avgWinRate");
+        //获取亏损次数
+        int lossCount = (Integer) simulateResult.get("lossCount");
+        //获取平均亏损利率
+        float avgLossRate = (Float) simulateResult.get("avgLossRate");
+
         //获取年限
         float years = backTestService.getYears(allIndexDatas);
 
@@ -69,11 +79,17 @@ public class BackTestController {
         result.put("indexEndDate",indexEndDate);
         result.put("profits",profits);
         result.put("trades",trades);
+
         result.put("years",years);
         result.put("indexIncomeTotal", indexIncomeTotal);
         result.put("indexIncomeAnnual", indexIncomeAnnual);
         result.put("trendIncomeTotal", trendIncomeTotal);
         result.put("trendIncomeAnnual", trendIncomeAnnual);
+
+        result.put("winCount", winCount);
+        result.put("lossCount", lossCount);
+        result.put("avgWinRate", avgWinRate);
+        result.put("avgLossRate", avgLossRate);
         return result;
     }
 
