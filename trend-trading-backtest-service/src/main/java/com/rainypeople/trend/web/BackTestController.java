@@ -3,6 +3,7 @@ package com.rainypeople.trend.web;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
+import com.rainypeople.trend.pojo.AnnualProfit;
 import com.rainypeople.trend.pojo.IndexData;
 import com.rainypeople.trend.pojo.Profit;
 import com.rainypeople.trend.pojo.Trade;
@@ -21,9 +22,13 @@ public class BackTestController {
     @Autowired
     BackTestService backTestService;
 
-    @GetMapping("/simulate/{code}/{startDate}/{endDate}")
+    @GetMapping("/simulate/{code}/{ma}/{buyThreshold}/{sellThreshold}/{serviceCharge}/{startDate}/{endDate}")
     @CrossOrigin
     public Map<String,Object> backtest(@PathVariable("code")String code,
+                                       @PathVariable("ma")int ma,
+                                       @PathVariable("buyThreshold")float buyThreshold,
+                                       @PathVariable("sellThreshold")float sellThreshold,
+                                       @PathVariable("serviceCharge")float serviceCharge,
                                        @PathVariable("startDate")String strStartDate,
                                        @PathVariable("endDate")String strEndDate)throws Exception{
         List<IndexData> allIndexDatas = backTestService.listIndexData(code);
@@ -35,13 +40,13 @@ public class BackTestController {
         allIndexDatas = filterByDateRange(allIndexDatas,strStartDate, strEndDate);
 
         //moving average移动均线,20天的
-        int ma=20;
+        //int ma=20;
         //抛出阈值
-        float sellSate=0.95f;
+        float sellSate=sellThreshold;
         //购买阈值
-        float buySate=1.05f;
+        float buySate=buyThreshold;
         //手续费
-        float serviceCharge=0f;
+        //float serviceCharge=0f;
 
         //模拟服务
         Map<String,?> simulateResult=backTestService.simulate(ma,sellSate,buySate,serviceCharge,allIndexDatas);
@@ -49,6 +54,8 @@ public class BackTestController {
         List<Profit> profits= (List<Profit>) simulateResult.get("profits");
         //从map集合中取出交易类trade
         List<Trade> trades= (List<Trade>) simulateResult.get("trades");
+
+        List<AnnualProfit> annualProfits = (List<AnnualProfit>) simulateResult.get("annualProfits");
 
         //获取盈利次数
         int winCount = (Integer) simulateResult.get("winCount");
@@ -90,6 +97,8 @@ public class BackTestController {
         result.put("lossCount", lossCount);
         result.put("avgWinRate", avgWinRate);
         result.put("avgLossRate", avgLossRate);
+
+        result.put("annualProfits",annualProfits);
         return result;
     }
 

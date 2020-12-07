@@ -1,8 +1,12 @@
 package com.rainypeople.trend.service;
 
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import com.rainypeople.trend.client.IndexDataClient;
+import com.rainypeople.trend.pojo.AnnualProfit;
 import com.rainypeople.trend.pojo.IndexData;
 import com.rainypeople.trend.pojo.Profit;
 import com.rainypeople.trend.pojo.Trade;
@@ -146,6 +150,9 @@ public class BackTestService {
         avgWinRate=totalWinRate/winCount;
         avgLossRate=totalLossRate/lossCount;
 
+        //获取相关年收益类的信息
+        List<AnnualProfit> annualProfits = caculateAnnualProfits(allIndexDatas, profits);
+
         Map<String,Object> result=new HashMap<>();
         result.put("profits",profits);
         result.put("trades",trades);
@@ -154,7 +161,73 @@ public class BackTestService {
         result.put("lossCount", lossCount);
         result.put("avgWinRate", avgWinRate);
         result.put("avgLossRate", avgLossRate);
+
+        result.put("annualProfits", annualProfits);
         return result;
+    }
+
+    private List<AnnualProfit> caculateAnnualProfits(List<IndexData> allIndexDatas, List<Profit> profits) {
+        List<AnnualProfit> result=new ArrayList<>();
+        String strStatDate = allIndexDatas.get(0).getDate();
+        String strEndDate = allIndexDatas.get(allIndexDatas.size()-1).getDate();
+        Date startDate=DateUtil.parse(strStatDate);
+        DateTime endDate = DateUtil.parse(strEndDate);
+        int startYear = DateUtil.year(startDate);
+        int endYear = DateUtil.year(endDate);
+        for (int year=startYear;year<=endYear;year++){
+            AnnualProfit annualProfit=new AnnualProfit();
+            annualProfit.setYear(year);
+            float indexIncome = getIndexIncome(year,allIndexDatas);
+            float trendIncome = getTrendIncome(year,profits);
+            annualProfit.setIndexIncome(indexIncome);
+            annualProfit.setTrendIncome(trendIncome);
+            result.add(annualProfit);
+        }
+        return result;
+    }
+
+    private float getTrendIncome(int year, List<Profit> profits) {
+        Profit first=null;
+        Profit last=null;
+        for (Profit profit:profits){
+            String strDate = profit.getDate();
+            int currentYear = getYear(strDate);
+            if (year==currentYear){
+                if (null==first){
+                    first=profit;
+                }
+                last=profit;
+            }
+        }
+        return (last.getValue()-first.getValue())/first.getValue();
+    }
+
+
+    private float getIndexIncome(int year, List<IndexData> allIndexDatas) {
+        //获取数据中年份开始的第一天数据
+        IndexData first=null;
+        //数据中年份结束的最后一天
+        IndexData last=null;
+        for (IndexData indexData:allIndexDatas){
+            String strDate = indexData.getDate();
+            Date date=DateUtil.parse(strDate);
+            //取得当前指数数据的年份
+            int currentYear=getYear(strDate);
+            if(currentYear==year){
+                if (null==first){
+                    //取得数据中年份开始的一天指数数据
+                    first=indexData;
+                }
+                //结尾的一天指数数据
+                last=indexData;
+            }
+        }
+        return (last.getClosePoint()-first.getClosePoint())/first.getClosePoint();
+    }
+
+    private int getYear(String strDate) {
+        String strYear= StrUtil.subBefore(strDate,"-",false);
+        return Convert.toInt(strYear);
     }
 
     public float getMax(int i, int ma, List<IndexData> allIndexDatas) {
