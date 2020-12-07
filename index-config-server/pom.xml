@@ -4,44 +4,28 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>com.rainypeople.trend</groupId>
     <artifactId>trendParentProject</artifactId>
+    <groupId>com.rainypeople.trend</groupId>
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>trend-trading-backtest-view</artifactId>
-  <name>trend-trading-backtest-view</name>
-
-
+  <artifactId>index-config-server</artifactId>
+  <name>index-config-server</name>
 
   <dependencies>
-    <!-- springboot web -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
-    </dependency>
-    <!--thymeleaf-->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-thymeleaf</artifactId>
-    </dependency>
-    <!-- eureka-client -->
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
     </dependency>
-    <!--zipkin-->
     <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-zipkin</artifactId>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
-    <!--config-client-->
     <dependency>
       <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-config</artifactId>
+      <artifactId>spring-cloud-config-server</artifactId>
     </dependency>
 
   </dependencies>
-
 
 </project>

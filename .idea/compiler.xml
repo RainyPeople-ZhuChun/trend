@@ -14,6 +14,7 @@
         <module name="index-data-service" />
         <module name="trend-trading-backtest-service" />
         <module name="eureka-server" />
+        <module name="index-config-server" />
         <module name="index-gather-store-service" />
       </profile>
     </annotationProcessing>
@@ -25,6 +26,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="eureka-server" options="-parameters" />
       <module name="index-codes-service" options="-parameters" />
+      <module name="index-config-server" options="-parameters" />
       <module name="index-data-service" options="-parameters" />
       <module name="index-gather-store-service" options="-parameters" />
       <module name="index-zuul-service" options="-parameters" />
